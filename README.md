@@ -1,6 +1,29 @@
 # pitfalls-ios
 
 
+#### 2016-07-13
+
+1、外部链接打不开的问题：    
+情景：当在运用中使用［［UIApplication sharedApplication］openURL：［NSURL urlWithString：urlString］］去打开一个外部链接时，往往都能正常的打开，凡事都有例外，也有怎么都打不开的情形。    
+i、当urlString存在空格的时候，比如第一个字符为空格，那么，打开外部链接的命令将不生效。    
+ii、当urlString 存在中文字符时也打不开。    
+
+成因分析：    
+构建URL的时候（不管是＋号方法还是减号方法构建的，只要第一个字符为空格，可能苹果为了提高效率考虑，直接返回URL空对象，所以打开外部链接不生效）。    
+
+解决方案  
+1、去空格    
+2、统一UTF－8 编码    
+代码：    
+
+    NSString *urlString = [NSString stringWithString:string];
+    
+    NSString *URL = [urlString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSURL *url = [NSURL URLWithString:[URL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    return url;
+
 #### 2016-05-12
 
 
