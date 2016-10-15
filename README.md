@@ -1,6 +1,28 @@
 # pitfalls-ios
 
 
+#### 2016-10-15
+
+1、MJ Refresh 使用过程的崩溃解决方案    
+
+有时候在释放一个包含MJRefresh的控件或者View的时候崩溃，然后报了如下的崩溃信息    
+
+*** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'An instance 0x102031200 of class UITableView was deallocated while key value observers were still registered with it. Current observation info: <NSKeyValueObservationInfo 0x17422f4e0> (
+<NSKeyValueObservance 0x174447380: Observer: 0x100e07860, Key path: contentSize, Options: <New: YES, Old: NO, Prior: NO> Context: 0x0, Property: 0x1744473b0>
+<NSKeyValueObservance 0x174447530: Observer: 0x100e07860, Key path: contentOffset, Options: <New: YES, Old: NO, Prior: NO> Context: 0x0, Property: 0x174447560>
+<NSKeyValueObservance 0x1744476b0: Observer: 0x100e3e810, Key path: contentOffset, Options: <New: YES, Old: NO, Prior: NO> Context: 0x0, Property: 0x174447560>
+)'
+*** First throw call stack:
+(0x18c7241c0 0x18b15c55c 0x18c724108 0x18d171df4 0x18b175fe0 0x19256b134 0x1926f18f8 0x1000c03f0 0x100225870 0x18c713e30 0x18c605c70 0x1926f1d08 0x1926fcbb4 0x10009ba0c 0x18b15af10 0x18b1676e0 0x18b167744 0x19290afe0 0x1926f1d30 0x18c601
+
+解决方法：在dealloc方法内部移除将MJRefresh对ScrollerViewcontentOffset的KVO移除   
+example:   
+    -(void) dealloc   
+    {   
+            [self.tableView removeObserver:self.mjheader forKeyPath:@"contentOffset"];   
+    }
+
+
 #### 2016-07-13
 
 1、外部链接打不开的问题：    
